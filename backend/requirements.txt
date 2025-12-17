@@ -1,6 +1,9 @@
-fastapi
-uvicorn
-langchain
-langchain-openai
+fastapi==0.110.0
+uvicorn==0.29.0
+pydantic==1.10.13
+
+langchain==0.0.353
+langchain-openai==0.0.6
+
 python-dotenv
 requests
