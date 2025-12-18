@@ -1,0 +1,26 @@
+.chat-window {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 20px;
+  overflow-y: auto;
+  height: calc(100vh - 160px);
+}
+
+.chat-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.empty-chat {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9aa0a6;
+}
+
+.placeholder-text {
+  font-size: 14px;
+  opacity: 0.8;
+}

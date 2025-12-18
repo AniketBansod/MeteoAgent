@@ -1,0 +1,41 @@
+.multi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.mini-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+
+.mini-city {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.mini-temp {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin: 4px 0 8px;
+}
+
+.mini-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin: 2px 0;
+}
+
+.mini-row span {
+  color: #666;
+}
+
+.mini-cond {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: #444;
+}

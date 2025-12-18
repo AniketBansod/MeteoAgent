@@ -1,0 +1,41 @@
+.topbar {
+  background: linear-gradient(90deg, #1d3557, #457b9d);
+  color: white;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.menu {
+  display: flex;
+  gap: 8px;
+}
+
+.pill {
+  background: rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.25);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  backdrop-filter: blur(4px);
+  transition: transform .15s ease, background .15s ease;
+  white-space: nowrap;
+}
+
+.pill:hover {
+  background: rgba(255,255,255,0.22);
+  transform: translateY(-1px);
+  cursor: default;
+}
+
+@media (max-width: 680px) {
+  .pill .label { display: none; }
+  .pill { font-size: 0.85rem; padding: 6px 8px; }
+  .brand { font-size: 18px; }
+}

@@ -1,0 +1,44 @@
+/* ===== Main page layout ===== */
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ===== 2 column grid: left = chat, right = dashboard ===== */
+.columns {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  overflow: hidden;
+}
+
+/* ===== panels ===== */
+.panel {
+  padding: 14px;
+  overflow-y: auto;
+}
+
+/* ===== left side chat area ===== */
+.chat {
+  border-right: 1px solid #ddd;
+  background: #fff;
+}
+
+/* ===== right side dashboard area ===== */
+.dashboard {
+  background: #fafafa;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.chat {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.chat > div:last-child {
+  margin-top: auto;
+}

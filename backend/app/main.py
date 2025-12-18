@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import traceback
 import logging
@@ -10,8 +11,24 @@ from app.schemas import AgentResponse, ReasoningStep
 
 app = FastAPI(title="MeteoAgent")
 
+# Allow frontend dev origins
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["*"],
+)
+
 class ChatRequest(BaseModel):
     message: str
+
+
+class WeatherBatchRequest(BaseModel):
+    cities: list[str]
 
 
 @app.post("/chat", response_model=AgentResponse)
@@ -268,3 +285,36 @@ def debug_env():
         "OPENROUTER_API_KEY_set": bool(os.getenv("OPENROUTER_API_KEY")),
         "WEATHER_API_KEY_set": bool(os.getenv("WEATHER_API_KEY"))
     }
+
+
+@app.get("/weather")
+def get_weather(city: str):
+    """Return structured weather for a single city.
+    Frontend uses this for rendering multi-city results.
+    """
+    if not city or not city.strip():
+        raise HTTPException(status_code=400, detail="Missing 'city' query param")
+    data = get_weather_json(city.strip())
+    if not data:
+        raise HTTPException(status_code=404, detail="Weather unavailable")
+    return data
+
+
+@app.post("/weather/batch")
+def get_weather_batch(req: WeatherBatchRequest):
+    """Return structured weather for a list of cities (best-effort)."""
+    if not req.cities:
+        return []
+    out = []
+    seen = set()
+    for c in req.cities:
+        name = (c or "").strip()
+        if not name:
+            continue
+        if name.lower() in seen:
+            continue
+        seen.add(name.lower())
+        w = get_weather_json(name)
+        if w:
+            out.append(w)
+    return out

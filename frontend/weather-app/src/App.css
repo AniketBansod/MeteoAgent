@@ -1,42 +1,215 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+.card {
+  padding: 18px;
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.title {
+  font-weight: 600;
+  font-size: 1.2rem;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.temp {
+  font-size: 2.4rem;
+  font-weight: bold;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.meta {
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+.cond {
+  font-weight: 500;
+  margin-top: 8px;
+  color: #555;
 }
 
 .card {
-  padding: 2em;
+  padding: 18px;
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.read-the-docs {
-  color: #888;
+.card .title {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.temp {
+  font-size: 2.4rem;
+  font-weight: bold;
+}
+
+.meta {
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+.cond {
+  font-weight: 500;
+  margin-top: 8px;
+  color: #555;
+}
+
+.dashboard .card {
+  min-height: 120px;
+}
+
+.chat-window {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chat-body {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.chat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chat-footer {
+  padding-top: 8px;
+}
+
+.bubble-row {
+  display: flex;
+  width: 100%;
+}
+
+.bubble-row.left {
+  justify-content: flex-start;
+}
+
+.bubble-row.right {
+  justify-content: flex-end;
+}
+
+.bubble {
+  max-width: 70%;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  box-shadow: var(--shadow);
+}
+
+.bubble.user {
+  background: #2563eb;
+  color: white;
+}
+
+.bubble.assistant {
+  background: #ffffff;
+  border: 1px solid #e1e1e1;
+}
+
+
+.input-bar {
+  display: flex;
+  gap: 8px;
+}
+
+.input-bar input {
+  flex: 1;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border: 1px solid #bbb;
+}
+
+.input-bar button {
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  border: none;
+  background: #222;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.input-bar button:hover {
+  opacity: 0.85;
+}
+
+.input-bar button:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.topbar {
+  height: 60px;
+  padding: 0 18px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.weather-card {
+  padding: 26px;
+  background: linear-gradient(125deg, #ffffff, #f9fafc);
+  border-radius: 18px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.weather-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.weather-temp {
+  font-size: 3.2rem;
+  font-weight: 800;
+  color: #111;
+}
+
+.weather-desc {
+  font-size: 1.1rem;
+  opacity: 0.7;
+}
+
+.weather-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+body {
+  color: #1f2329;
+}
+
+.card {
+  transition: .25s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+}
+
+.columns {
+  background: transparent;
 }

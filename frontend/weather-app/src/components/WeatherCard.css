@@ -1,0 +1,51 @@
+.weather-card {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 18px;
+  box-shadow: 0px 4px 25px rgba(0,0,0,0.05);
+  width: 340px;
+  margin: 20px auto;
+  transition: 0.3s ease;
+}
+
+.weather-card:hover {
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+}
+
+.weather-city {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.weather-temp {
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.weather-details div {
+  margin: 6px 0;
+  font-size: 15px;
+  color: #444;
+}
+.comparison-rows {
+  margin-top: 15px;
+}
+
+.comparison-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.comparison-row:last-child {
+  border-bottom: none;
+}
+.summary-text {
+  margin-top: 10px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #555;
+}
