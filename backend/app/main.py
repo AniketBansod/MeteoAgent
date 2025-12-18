@@ -11,15 +11,11 @@ from app.schemas import AgentResponse, ReasoningStep
 
 app = FastAPI(title="MeteoAgent")
 
-# Allow frontend dev origins
+# Enable permissive CORS for production compatibility
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_origins=["*"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 

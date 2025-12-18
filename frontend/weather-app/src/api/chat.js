@@ -1,5 +1,14 @@
+export const backend = import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000';
+
+function joinUrl(base, path) {
+  if (!base) return path;
+  const b = base.endsWith('/') ? base.slice(0, -1) : base;
+  const p = path.startsWith('/') ? path : `/${path}`;
+  return `${b}${p}`;
+}
+
 export async function sendChat(message){
-  const res = await fetch('http://127.0.0.1:8000/chat',{
+  const res = await fetch(joinUrl(backend, '/chat'),{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body: JSON.stringify({message})
@@ -12,7 +21,7 @@ export async function sendChat(message){
 }
 
 export async function fetchWeather(city){
-  const url = new URL('http://127.0.0.1:8000/weather')
+  const url = new URL(joinUrl(backend, '/weather'))
   url.searchParams.set('city', city)
   const res = await fetch(url, { method: 'GET' })
   if(!res.ok){
@@ -22,7 +31,7 @@ export async function fetchWeather(city){
 }
 
 export async function fetchWeatherBatch(cities){
-  const res = await fetch('http://127.0.0.1:8000/weather/batch',{
+  const res = await fetch(joinUrl(backend, '/weather/batch'),{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body: JSON.stringify({cities})
