@@ -3,11 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import traceback
 import logging
-
+from app.auth_routes import router as auth_router
 from app.agent import get_agent
 from app.intent import detect_intent
 from app.tools import get_weather_json, compare_weather, score_city, summarize_forecast, weekend_summary, tomorrow_summary, hourly_lookup
 from app.schemas import AgentResponse, ReasoningStep
+from app.memory_routes import router as memory_router
 
 app = FastAPI(title="MeteoAgent")
 
@@ -18,6 +19,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(auth_router)
+
+app.include_router(memory_router)
 
 class ChatRequest(BaseModel):
     message: str

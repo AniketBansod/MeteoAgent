@@ -1,4 +1,3 @@
-# backend/app/db_init.py
 from app.db import get_db_connection
 
 def init_db():
@@ -17,3 +16,4 @@ def init_db():
     conn.commit()
     cur.close()
     conn.close()
+    print("✅ users table ready")
