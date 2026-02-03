@@ -341,3 +341,87 @@ def compare_weather(city1: str, city2: str):
         "city1_weather": w1,
         "city2_weather": w2,
     }
+
+
+# ============================================================
+# MEMORY TOOLS - Semantic search & save using txtai + Postgres
+# ============================================================
+
+def memory_search(query: str, user_id: int, limit: int = 5) -> dict:
+    """
+    Search for relevant memories using txtai semantic search.
+    
+    This is called BEFORE generating a response to provide context.
+    
+    Args:
+        query: User's message/question
+        user_id: ID of the authenticated user
+        limit: Max number of memories to retrieve (default 5)
+    
+    Returns:
+        dict with keys:
+        - memories: list of relevant memory texts
+        - latency_ms: search latency in milliseconds
+        - count: number of memories found
+    """
+    from app.memory_service import search_memories
+    
+    results, latency_ms = search_memories(query, user_id=user_id, limit=limit)
+    
+    memories = [r.get("text", "") for r in results if r.get("text")]
+    
+    return {
+        "memories": memories,
+        "latency_ms": round(latency_ms, 2),
+        "count": len(memories),
+    }
+
+
+def memory_save(
+    user_id: int,
+    text: str,
+    metadata: dict | None = None,
+    scope: str = "user",
+) -> dict:
+    """
+    Save a memory to Postgres and update txtai index (async-safe).
+    
+    This is called AFTER the response is sent to the user.
+    The save operation:
+    1. Inserts into Postgres memories table
+    2. Incrementally upserts into txtai index (no full rebuild)
+    
+    Args:
+        user_id: ID of the authenticated user
+        text: Memory content to save
+        metadata: Optional metadata dict (stored as JSONB)
+        scope: Memory scope ("user" or "org")
+    
+    Returns:
+        dict with status and memory_id (if successful)
+    """
+    from app.memory_service import save_memory_async
+    
+    try:
+        # This handles both Postgres insert and txtai index upsert
+        save_memory_async(user_id, text, metadata, scope)
+        return {"status": "saved", "text_preview": text[:100]}
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
+def format_memories_context(memories: list[str]) -> str:
+    """
+    Format retrieved memories into a context block for the LLM prompt.
+    
+    Args:
+        memories: List of memory text strings
+    
+    Returns:
+        Formatted context string
+    """
+    if not memories:
+        return ""
+    
+    lines = [f"- {m}" for m in memories]
+    return "Relevant past information:\n" + "\n".join(lines)

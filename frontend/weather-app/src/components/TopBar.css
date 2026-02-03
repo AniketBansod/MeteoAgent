@@ -12,14 +12,24 @@
   font-weight: 700;
 }
 
+.brand-link {
+  color: inherit;
+  text-decoration: none;
+}
+
 .menu {
   display: flex;
   gap: 8px;
+  align-items: center;
+}
+
+.spacer {
+  width: 12px;
 }
 
 .pill {
-  background: rgba(255,255,255,0.14);
-  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   padding: 6px 10px;
   border-radius: 999px;
   font-size: 0.9rem;
@@ -29,13 +39,44 @@
 }
 
 .pill:hover {
-  background: rgba(255,255,255,0.22);
+  background: rgba(255, 255, 255, 0.22);
   transform: translateY(-1px);
   cursor: default;
 }
 
+.pill-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.pill-link:hover {
+  cursor: pointer;
+}
+
+.pill-button {
+  color: inherit;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.pill-button:hover {
+  background: rgba(255, 255, 255, 0.22);
+  cursor: pointer;
+}
+
 @media (max-width: 680px) {
-  .pill .label { display: none; }
-  .pill { font-size: 0.85rem; padding: 6px 8px; }
-  .brand { font-size: 18px; }
+  .pill .label {
+    display: none;
+  }
+
+  .pill {
+    font-size: 0.85rem;
+    padding: 6px 8px;
+  }
+
+  .brand {
+    font-size: 18px;
+  }
 }

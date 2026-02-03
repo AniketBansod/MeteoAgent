@@ -10,9 +10,32 @@ from langchain_openai import ChatOpenAI
 from langchain.agents import initialize_agent, AgentType
 from langchain.tools import Tool
 
-from app.tools import get_weather_json, compare_weather, summarize_forecast
+from app.tools import (
+    get_weather_json, 
+    compare_weather, 
+    summarize_forecast,
+    memory_search,
+    memory_save,
+    format_memories_context,
+)
 from app.prompts import SYSTEM_PROMPT
 from app.schemas import ReasoningStep
+
+
+def get_llm():
+    """Get configured ChatOpenAI instance for the agent."""
+    api_key = os.getenv("OPENROUTER_API_KEY")
+    if not api_key:
+        raise ValueError("OPENROUTER_API_KEY not configured")
+
+    model_id = os.getenv("OPENROUTER_MODEL", "openai/gpt-4o-mini")
+    
+    return ChatOpenAI(
+        model=model_id,
+        temperature=0,
+        openai_api_key=api_key,
+        openai_api_base="https://openrouter.ai/api/v1",
+    )
 
 
 def get_agent():
@@ -91,3 +114,94 @@ def get_agent():
     )
 
     return agent, reasoning_steps
+
+
+def chat_with_memory(
+    user_message: str,
+    user_id: int,
+    reasoning_steps: list[ReasoningStep] | None = None,
+) -> tuple[str, list[str], float]:
+    """
+    Chat flow with memory integration:
+    
+    1. memory_search(query) -> retrieve relevant past context
+    2. Build prompt with memories + user message
+    3. LLM generates response
+    4. Return (answer, used_memories, latency_ms)
+    
+    NOTE: memory_save is called SEPARATELY after response is sent (async)
+    
+    Args:
+        user_message: The user's chat message
+        user_id: Authenticated user ID
+        reasoning_steps: Optional list to append reasoning info
+    
+    Returns:
+        Tuple of (answer, used_memories, search_latency_ms)
+    """
+    if reasoning_steps is None:
+        reasoning_steps = []
+    
+    # 1. Search for relevant memories
+    reasoning_steps.append(ReasoningStep(
+        step="memory_search", 
+        detail=f"Searching memories for: {user_message[:50]}..."
+    ))
+    
+    search_result = memory_search(user_message, user_id=user_id, limit=5)
+    memories = search_result.get("memories", [])
+    latency_ms = search_result.get("latency_ms", 0)
+    
+    reasoning_steps.append(ReasoningStep(
+        step="memory_result", 
+        detail=f"Found {len(memories)} relevant memories in {latency_ms:.1f}ms"
+    ))
+    
+    # 2. Build context-aware prompt
+    memories_context = format_memories_context(memories)
+    
+    prompt = f"""You are a helpful assistant. 
+
+{memories_context}
+
+User: {user_message}
+
+Respond naturally. If the memories are relevant, use them to personalize your response.
+If they are not relevant, just answer the question directly."""
+
+    # 3. Generate response
+    reasoning_steps.append(ReasoningStep(step="llm_call", detail="Generating response with memory context"))
+    
+    try:
+        llm = get_llm()
+        response = llm.invoke(prompt)
+        answer = getattr(response, "content", None) or str(response)
+    except Exception as e:
+        reasoning_steps.append(ReasoningStep(step="error", detail=f"LLM call failed: {e}"))
+        answer = "I'm sorry, I couldn't process your request right now."
+    
+    return answer, memories, latency_ms
+
+
+def save_conversation_memory(
+    user_id: int,
+    user_message: str,
+    assistant_response: str,
+    metadata: dict | None = None,
+) -> None:
+    """
+    Save conversation as a memory (called async after response).
+    
+    Creates a memory entry combining the user message and response
+    for future retrieval.
+    """
+    # Format conversation for memory storage
+    memory_text = f"User asked: {user_message}. Assistant responded: {assistant_response[:200]}"
+    
+    full_metadata = {
+        "type": "conversation",
+        "user_message": user_message,
+        **(metadata or {}),
+    }
+    
+    memory_save(user_id, memory_text, full_metadata, scope="user")

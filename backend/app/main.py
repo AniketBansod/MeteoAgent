@@ -9,6 +9,10 @@ from app.intent import detect_intent
 from app.tools import get_weather_json, compare_weather, score_city, summarize_forecast, weekend_summary, tomorrow_summary, hourly_lookup
 from app.schemas import AgentResponse, ReasoningStep
 from app.memory_routes import router as memory_router
+from app.memory_chat_routes import router as memory_chat_router
+from app.memory_benchmark_routes import router as memory_benchmark_router
+from app.memory_index import get_memory_index
+import threading
 
 app = FastAPI(title="MeteoAgent")
 
@@ -23,6 +27,19 @@ app.add_middleware(
 app.include_router(auth_router)
 
 app.include_router(memory_router)
+
+# Isolated memory-only chat endpoint (does not use weather tools)
+app.include_router(memory_chat_router)
+
+# Optional benchmarking endpoint for memory search latency
+app.include_router(memory_benchmark_router)
+
+
+
+@app.on_event("startup")
+def _warm_memory_index():
+    # Warm in background so the first user query doesn't pay the full index build cost.
+    threading.Thread(target=lambda: get_memory_index().initialize(), daemon=True).start()
 
 class ChatRequest(BaseModel):
     message: str
